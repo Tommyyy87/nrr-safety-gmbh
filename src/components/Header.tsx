@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Container from "./ui/Container";
 import CustomButton from "./ui/CustomButton";
@@ -102,7 +101,6 @@ const Header = () => {
         </Container>
       </header>
 
-      {/* Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-screen w-full bg-white z-40 transform transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -150,7 +148,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
       <section
         id="home"
         className="min-h-screen pt-24 flex items-center relative overflow-hidden bg-gradient-to-b from-blue-50 to-white"
@@ -185,7 +182,6 @@ const Header = () => {
                     onClick={() => scrollToSection("contact")}
                     variant="primary"
                     size="lg"
-                    className="animate-pulse-slow"
                   >
                     Jetzt Kontakt aufnehmen
                   </CustomButton>
