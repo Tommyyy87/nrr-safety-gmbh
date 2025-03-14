@@ -219,7 +219,7 @@ const Contact = () => {
                       type="submit"
                       variant="primary"
                       size="lg"
-                      className="w-full animate-pulse-slow"
+                      className="w-full"
                     >
                       Absenden
                     </CustomButton>
