@@ -17,18 +17,18 @@ const Footer = () => {
               Wir bieten professionelle Sicherheitslösungen für Unternehmen jeder Größe.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-blue-200 hover:text-white transition-colors">
+              <a href="https://www.facebook.com/notfallschullungen" className="text-blue-200 hover:text-white transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-blue-200 hover:text-white transition-colors">
+              <a href="https://www.instagram.com/notfallschulungen_rhein_ruhr/" className="text-blue-200 hover:text-white transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-blue-200 hover:text-white transition-colors">
+              {/* <a href="#" className="text-blue-200 hover:text-white transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
               <a href="#" className="text-blue-200 hover:text-white transition-colors">
                 <Linkedin className="h-5 w-5" />
-              </a>
+              </a> */}
             </div>
           </div>
 
@@ -102,7 +102,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-6 text-center text-xs text-blue-300">
-          <p>Neumarkt 8, 41460 Neuss | meenke@nrr-safety.de | grotefels@nrr-safety.de</p>
+          <p>Neumarkt 8, 41460 Neuss | team@nrr-safety.de</p>
         </div>
       </Container>
     </footer>
