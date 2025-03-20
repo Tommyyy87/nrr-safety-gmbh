@@ -2,9 +2,11 @@ import React from "react";
 import Container from "./ui/Container";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCookieConsentContext } from "@/providers/CookieConsentProvider";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { openSettings } = useCookieConsentContext();
 
   return (
     <footer className="bg-nrr-blue text-white py-12">
@@ -77,9 +79,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-blue-100 hover:text-white transition-colors">
+                <button
+                  onClick={openSettings}
+                  className="text-blue-100 hover:text-white transition-colors"
+                >
                   Cookie-Einstellungen
-                </a>
+                </button>
               </li>
               <li>
                 <a href="#" className="text-blue-100 hover:text-white transition-colors">
@@ -94,11 +99,6 @@ const Footer = () => {
           <p className="text-blue-200 text-sm">
             © {currentYear} NRR safety GmbH. Alle Rechte vorbehalten.
           </p>
-          <div className="mt-4 md:mt-0">
-            <a href="#" className="text-blue-200 hover:text-white text-sm transition-colors">
-              Cookie-Einstellungen
-            </a>
-          </div>
         </div>
 
         <div className="mt-6 text-center text-xs text-blue-300">
