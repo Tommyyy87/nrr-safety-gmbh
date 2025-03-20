@@ -48,7 +48,7 @@ const Contact = () => {
       className="section-padding bg-gradient-to-b from-white to-blue-50 relative"
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nrr-blue/20 to-transparent"></div>
-      
+
       <Container>
         <div className="text-center max-w-3xl mx-auto mb-16">
           <ScrollReveal>
@@ -56,13 +56,13 @@ const Contact = () => {
               Kontakt
             </span>
           </ScrollReveal>
-          
+
           <ScrollReveal delay={100}>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Kontaktieren Sie uns für eine unverbindliche Beratung
             </h2>
           </ScrollReveal>
-          
+
           <ScrollReveal delay={200}>
             <p className="text-gray-700 text-lg">
               Ob per E-Mail oder Telefon – wir freuen uns darauf, Ihre Fragen zu beantworten und Ihnen ein maßgeschneidertes Angebot zu erstellen.
@@ -75,7 +75,7 @@ const Contact = () => {
             <ScrollReveal>
               <div className="before-glass rounded-xl p-8 mb-8">
                 <h3 className="text-2xl font-semibold mb-6">Direkte Kontaktdaten</h3>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-start">
                     <div className="mr-4 text-nrr-blue">
@@ -83,38 +83,37 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium mb-1">E-Mail</p>
-                      <p className="text-gray-700">meenke@nrr-safety.de</p>
-                      <p className="text-gray-700">grotefels@nrr-safety.de</p>
+                      <p className="text-gray-700"><a href="mailto:team@nrr-safety.de">team@nrr-safety.de</a></p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <div className="mr-4 text-nrr-blue">
                       <Phone className="h-6 w-6" />
                     </div>
                     <div>
                       <p className="font-medium mb-1">Telefon</p>
-                      <p className="text-gray-700">+49 123 456 789</p>
+                      <p className="text-gray-700"><a href="tel:+4915756686199">49 1575 6686199</a></p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <div className="mr-4 text-nrr-blue">
                       <MapPin className="h-6 w-6" />
                     </div>
                     <div>
                       <p className="font-medium mb-1">Adresse</p>
-                      <p className="text-gray-700">Neumarkt 8, 41460 Neuss</p>
+                      <p className="text-gray-700"><a href="https://maps.app.goo.gl/Dicy2gMBK4LRY3sJ7" target="_blank">Neumarkt 8, 41460 Neuss</a></p>
                     </div>
                   </div>
                 </div>
               </div>
             </ScrollReveal>
-            
+
             <ScrollReveal delay={200}>
               <div className="before-glass rounded-xl p-8">
                 <h3 className="text-2xl font-semibold mb-6">Geschäftszeiten</h3>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-700">Montag - Freitag</span>
@@ -129,12 +128,12 @@ const Contact = () => {
                     <span className="font-medium">Geschlossen</span>
                   </div>
                 </div>
-                
-                <div className="mt-6 pt-6 border-t border-gray-200">
+
+                {/* <div className="mt-6 pt-6 border-t border-gray-200">
                   <p className="text-nrr-blue font-medium">
                     Notfälle? Wir bieten für Bestandskunden einen 24/7 Notdienst an.
                   </p>
-                </div>
+                </div> */}
               </div>
             </ScrollReveal>
           </div>
@@ -142,7 +141,7 @@ const Contact = () => {
           <ScrollReveal direction="left">
             <div className="before-glass rounded-xl p-8">
               <h3 className="text-2xl font-semibold mb-6">Kontaktformular</h3>
-              
+
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
@@ -169,7 +168,7 @@ const Contact = () => {
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                       E-Mail-Adresse
@@ -184,7 +183,7 @@ const Contact = () => {
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                       Telefonnummer (optional)
@@ -198,7 +197,7 @@ const Contact = () => {
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-nrr-blue focus:border-transparent transition-all"
                     />
                   </div>
-                  
+
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                       Ihre Nachricht / Ihr Anliegen
@@ -213,7 +212,7 @@ const Contact = () => {
                       required
                     ></textarea>
                   </div>
-                  
+
                   <div className="pt-2">
                     <CustomButton
                       type="submit"
