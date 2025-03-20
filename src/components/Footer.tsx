@@ -1,7 +1,7 @@
-
 import React from "react";
 import Container from "./ui/Container";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -13,7 +13,7 @@ const Footer = () => {
           <div className="md:col-span-2">
             <h3 className="text-xl font-bold mb-4">NRR safety GmbH</h3>
             <p className="mb-4 text-blue-100">
-              Ihr Partner für Brandschutz & Arbeitsschutz in ganz Deutschland. 
+              Ihr Partner für Brandschutz & Arbeitsschutz in ganz Deutschland.
               Wir bieten professionelle Sicherheitslösungen für Unternehmen jeder Größe.
             </p>
             <div className="flex space-x-4">
@@ -72,9 +72,9 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-blue-100 hover:text-white transition-colors">
+                <Link to="/datenschutz" className="text-blue-100 hover:text-white transition-colors">
                   Datenschutz
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-blue-100 hover:text-white transition-colors">
