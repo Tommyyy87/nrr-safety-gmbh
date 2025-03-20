@@ -1,3 +1,4 @@
+// src/components/Footer.tsx
 import React from "react";
 import Container from "./ui/Container";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
@@ -69,13 +70,18 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4">Rechtliches</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/impressum" className="text-blue-100 hover:text-white transition-colors">
-                  Impressum
+                <Link to="/agb" className="text-blue-100 hover:text-white transition-colors">
+                  AGB
                 </Link>
               </li>
               <li>
                 <Link to="/datenschutz" className="text-blue-100 hover:text-white transition-colors">
                   Datenschutz
+                </Link>
+              </li>
+              <li>
+                <Link to="/impressum" className="text-blue-100 hover:text-white transition-colors">
+                  Impressum
                 </Link>
               </li>
               <li>
@@ -86,11 +92,7 @@ const Footer = () => {
                   Cookie-Einstellungen
                 </button>
               </li>
-              <li>
-                <a href="#" className="text-blue-100 hover:text-white transition-colors">
-                  AGB
-                </a>
-              </li>
+
             </ul>
           </div>
         </div>

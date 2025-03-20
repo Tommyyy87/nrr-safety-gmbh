@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import Impressum from "./components/Impressum";
+import Agb from "./components/Agb";
 import CookieSettingsPage from "./pages/CookieSettings";
 import { CookieConsentProvider } from "./providers/CookieConsentProvider";
 
@@ -23,6 +25,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/datenschutz" element={<PrivacyPolicy />} />
             <Route path="/impressum" element={<Impressum />} />
+            <Route path="/agb" element={<Agb />} />
             <Route path="/cookie-einstellungen" element={<CookieSettingsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
