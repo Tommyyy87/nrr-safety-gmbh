@@ -1,9 +1,9 @@
-
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Container from "./ui/Container";
 import CustomButton from "./ui/CustomButton";
 import { Mail, Phone, MapPin, Check } from "lucide-react";
 import ScrollReveal from "./ui/ScrollReveal";
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +14,8 @@ const Contact = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -25,21 +27,58 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would normally send the form data to your server
-    setSubmitted(true);
-    // Reset form after submission
-    setTimeout(() => {
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
+    setLoading(true);
+    
+    try {
+      // Füge das aktuelle Datum hinzu
+      const currentDate = new Date().toLocaleString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
       });
-      setSubmitted(false);
-    }, 3000);
+      
+      // Bereite die Daten für die Übermittlung vor
+      const templateParams = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || "Nicht angegeben",
+        message: formData.message,
+        date: currentDate
+      };
+      
+      // Hier werden deine Service-ID und Template-ID verwendet
+      const result = await emailjs.send(
+        'service_wsqekqp',
+        'template_eu8mssv',
+        templateParams,
+        // Bitte füge hier deinen öffentlichen API-Schlüssel ein
+        'VYprboTK3z3nQQUTa' // Du findest diesen in deinen EmailJS Account Settings
+      );
+      
+      console.log('Email erfolgreich gesendet:', result.text);
+      setSubmitted(true);
+      
+      // Formular zurücksetzen nach Erfolgsmeldung
+      setTimeout(() => {
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
+        setSubmitted(false);
+      }, 5000); // Verlängert auf 5 Sekunden für bessere Lesbarkeit
+    } catch (error) {
+      console.error('Fehler beim Senden der E-Mail:', error);
+      // Bei Fehler zeigen wir eine Meldung im Formular an, anstatt einen Toast zu verwenden
+      alert("Fehler beim Senden der Nachricht. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt per E-Mail.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -93,7 +132,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium mb-1">Telefon</p>
-                      <p className="text-gray-700"><a href="tel:+4915756686199">49 1575 6686199</a></p>
+                      <p className="text-gray-700"><a href="tel:+4915756686199">+49 1575 6686199</a></p>
                     </div>
                   </div>
 
@@ -119,21 +158,7 @@ const Contact = () => {
                     <span className="text-gray-700">Montag - Freitag</span>
                     <span className="font-medium">09:00 - 17:00 Uhr</span>
                   </div>
-                  {/* <div className="flex justify-between">
-                    <span className="text-gray-700">Samstag</span>
-                    <span className="font-medium">Geschlossen</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-700">Sonntag</span>
-                    <span className="font-medium">Geschlossen</span>
-                  </div> */}
                 </div>
-
-                {/* <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-nrr-blue font-medium">
-                    Notfälle? Wir bieten für Bestandskunden einen 24/7 Notdienst an.
-                  </p>
-                </div> */}
               </div>
             </ScrollReveal>
           </div>
@@ -153,7 +178,7 @@ const Contact = () => {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                       Name / Firma
@@ -219,8 +244,9 @@ const Contact = () => {
                       variant="primary"
                       size="lg"
                       className="w-full"
+                      disabled={loading}
                     >
-                      Absenden
+                      {loading ? "Wird gesendet..." : "Absenden"}
                     </CustomButton>
                   </div>
                 </form>
