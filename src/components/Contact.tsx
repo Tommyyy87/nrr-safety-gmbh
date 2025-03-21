@@ -1,22 +1,75 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Container from "./ui/Container";
 import CustomButton from "./ui/CustomButton";
-import { Mail, Phone, MapPin, Check } from "lucide-react";
+import { Mail, Phone, MapPin, Check, AlertCircle } from "lucide-react";
 import ScrollReveal from "./ui/ScrollReveal";
 import emailjs from '@emailjs/browser';
+import { z } from "zod";
+
+// Umgebungsvariablen
+const RECAPTCHA_SITE_KEY = '6LdKQ_sqAAAAAE10DSqbn6v2MLrr4rwArJNiMU2t';
+const EMAILJS_SERVICE_ID = 'service_wsqekqp';
+const EMAILJS_TEMPLATE_ID = 'template_eu8mssv';
+const EMAILJS_PUBLIC_KEY = 'VYprboTK3z3nQQUTa';
+
+// Validierungsschema mit zod
+const contactSchema = z.object({
+  name: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein").max(100),
+  email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
+  phone: z.string().optional(),
+  message: z.string().min(10, "Nachricht muss mindestens 10 Zeichen lang sein").max(1000),
+  honeypot: z.string().max(0, "Dieses Feld muss leer bleiben"), // Honeypot-Feld muss leer sein
+});
+
+// Typen für Formular-Daten
+type ContactFormData = {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  honeypot: string; // Honeypot-Feld
+};
+
+// Typen für Formular-Fehler
+type FormErrors = {
+  [key in keyof ContactFormData]?: string;
+};
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
+  // FormData mit Honeypot erweitert
+  const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
     phone: "",
     message: "",
+    honeypot: "", // Honeypot-Feld, sollte immer leer bleiben
   });
 
+  // Formularstatus
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [formStartTime, setFormStartTime] = useState<number>(Date.now());
+  const [recaptchaToken, setRecaptchaToken] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Bei Komponenteninitialisierung den Zeitstempel setzen
+  useEffect(() => {
+    setFormStartTime(Date.now());
+
+    // reCAPTCHA v3 laden
+    if (window.grecaptcha) {
+      window.grecaptcha.ready(() => {
+        window.grecaptcha
+          .execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' })
+          .then((token: string) => {
+            setRecaptchaToken(token);
+          });
+      });
+    }
+  }, []);
+
+  // Bei Änderungen im Formular die Daten aktualisieren und Validierungsfehler zurücksetzen
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -25,14 +78,76 @@ const Contact = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Fehler für dieses Feld zurücksetzen, wenn der Benutzer etwas ändert
+    if (errors[name as keyof ContactFormData]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
   };
 
+  // Validierungsfunktion
+  const validateForm = (): boolean => {
+    try {
+      contactSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: FormErrors = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as keyof ContactFormData] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
+  // Zeitbasierte Validierung
+  const validateSubmitTime = (): boolean => {
+    const currentTime = Date.now();
+    const timeDiff = currentTime - formStartTime;
+
+    // Wenn das Formular in weniger als 3 Sekunden ausgefüllt wurde, 
+    // handelt es sich wahrscheinlich um einen Bot
+    return timeDiff > 3000;
+  };
+
+  // Formular abschicken
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Wenn Honeypot-Feld ausgefüllt wurde (durch Bot), dann verwerfen wir das Formular
+    // ohne Fehlermeldung, um den Bot nicht zu alarmieren
+    if (formData.honeypot) {
+      console.log("Honeypot-Falle hat einen Bot erkannt");
+      // Täusche eine erfolgreiche Übermittlung vor
+      setSubmitted(true);
+      return;
+    }
+
+    // Zeitbasierte Validierung
+    if (!validateSubmitTime()) {
+      console.log("Formular wurde zu schnell ausgefüllt, wahrscheinlich Bot");
+      // Täusche eine erfolgreiche Übermittlung vor
+      setSubmitted(true);
+      return;
+    }
+
+    // Formular validieren
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
-    
+
     try {
-      // Füge das aktuelle Datum hinzu
+      // Füge das aktuelle Datum und reCAPTCHA-Token hinzu
       const currentDate = new Date().toLocaleString('de-DE', {
         day: '2-digit',
         month: '2-digit',
@@ -40,28 +155,28 @@ const Contact = () => {
         hour: '2-digit',
         minute: '2-digit'
       });
-      
+
       // Bereite die Daten für die Übermittlung vor
       const templateParams = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone || "Nicht angegeben",
         message: formData.message,
-        date: currentDate
+        date: currentDate,
+        recaptchaToken: recaptchaToken
       };
-      
-      // Hier werden deine Service-ID und Template-ID verwendet
+
+      // Sende das Formular ab
       const result = await emailjs.send(
-        'service_wsqekqp',
-        'template_eu8mssv',
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
         templateParams,
-        // Bitte füge hier deinen öffentlichen API-Schlüssel ein
-        'VYprboTK3z3nQQUTa' // Du findest diesen in deinen EmailJS Account Settings
+        EMAILJS_PUBLIC_KEY
       );
-      
+
       console.log('Email erfolgreich gesendet:', result.text);
       setSubmitted(true);
-      
+
       // Formular zurücksetzen nach Erfolgsmeldung
       setTimeout(() => {
         setFormData({
@@ -69,12 +184,12 @@ const Contact = () => {
           email: "",
           phone: "",
           message: "",
+          honeypot: ""
         });
         setSubmitted(false);
-      }, 5000); // Verlängert auf 5 Sekunden für bessere Lesbarkeit
+      }, 5000);
     } catch (error) {
       console.error('Fehler beim Senden der E-Mail:', error);
-      // Bei Fehler zeigen wir eine Meldung im Formular an, anstatt einen Toast zu verwenden
       alert("Fehler beim Senden der Nachricht. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt per E-Mail.");
     } finally {
       setLoading(false);
@@ -189,9 +304,15 @@ const Contact = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-nrr-blue focus:border-transparent transition-all"
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-nrr-blue'} focus:border-transparent transition-all`}
                       required
                     />
+                    {errors.name && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle className="h-3 w-3 mr-1" />
+                        {errors.name}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -204,9 +325,15 @@ const Contact = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-nrr-blue focus:border-transparent transition-all"
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-nrr-blue'} focus:border-transparent transition-all`}
                       required
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle className="h-3 w-3 mr-1" />
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -219,8 +346,14 @@ const Contact = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-nrr-blue focus:border-transparent transition-all"
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-nrr-blue'} focus:border-transparent transition-all`}
                     />
+                    {errors.phone && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle className="h-3 w-3 mr-1" />
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -233,9 +366,29 @@ const Contact = () => {
                       value={formData.message}
                       onChange={handleChange}
                       rows={4}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-nrr-blue focus:border-transparent transition-all"
+                      className={`w-full px-4 py-3 rounded-lg border ${errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-nrr-blue'} focus:border-transparent transition-all`}
                       required
                     ></textarea>
+                    {errors.message && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle className="h-3 w-3 mr-1" />
+                        {errors.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Honeypot-Feld - Versteckt für echte Benutzer, aber sichtbar für Bots */}
+                  <div className="opacity-0 absolute top-0 left-0 h-0 w-0 -z-10 overflow-hidden">
+                    <label htmlFor="honeypot">Diese Feld nicht ausfüllen</label>
+                    <input
+                      type="text"
+                      id="honeypot"
+                      name="honeypot"
+                      value={formData.honeypot}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
                   </div>
 
                   <div className="pt-2">
@@ -249,6 +402,18 @@ const Contact = () => {
                       {loading ? "Wird gesendet..." : "Absenden"}
                     </CustomButton>
                   </div>
+
+                  <div className="text-xs text-gray-500 mt-3 text-center">
+                    Diese Seite ist durch reCAPTCHA geschützt und es gelten die
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-nrr-blue hover:underline mx-1">
+                      Datenschutzbestimmungen
+                    </a>
+                    und
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="text-nrr-blue hover:underline mx-1">
+                      Nutzungsbedingungen
+                    </a>
+                    von Google.
+                  </div>
                 </form>
               )}
             </div>
@@ -258,5 +423,15 @@ const Contact = () => {
     </section>
   );
 };
+
+// Typendefinition für reCAPTCHA
+declare global {
+  interface Window {
+    grecaptcha: {
+      ready: (callback: () => void) => void;
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+    };
+  }
+}
 
 export default Contact;
