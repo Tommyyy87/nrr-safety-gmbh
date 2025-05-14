@@ -1,8 +1,8 @@
-
+// src/components/Services.tsx
 import React, { useState } from "react";
 import Container from "./ui/Container";
 import CustomButton from "./ui/CustomButton";
-import { Shield, UserCheck, Flame, Cpu } from "lucide-react";
+import { Shield, UserCheck, Flame, Monitor, Heart, ExternalLink } from "lucide-react";
 import ScrollReveal from "./ui/ScrollReveal";
 
 const Services = () => {
@@ -24,6 +24,123 @@ const Services = () => {
     "Erstellung von Betriebsanweisungen & Notfalltafeln für gefährliche Stoffe",
   ];
 
+  const digitaleSchulungenServices = [
+    "[Platzhalter] Online-Kurse für Brandschutzhelfer mit interaktiven Modulen",
+    "[Platzhalter] Digitale Arbeitsschutz-Unterweisungen nach DGUV-Richtlinien",
+    "[Platzhalter] Webinare zu aktuellen Themen in der Arbeitssicherheit",
+    "[Platzhalter] E-Learning-Plattform mit Zertifizierungsmöglichkeiten",
+    "[Platzhalter] Video-Tutorials für Erste-Hilfe-Maßnahmen am Arbeitsplatz",
+  ];
+
+  const ersteHilfeServices = [
+    "Betriebliche Ersthelfer Aus- und Fortbildung nach DGUV Grundsatz 304-001",
+    "Erste-Hilfe-Kurse für Führerscheinbewerber gemäß FeV-Anforderungen",
+    "Ausbildung von Brandschutzhelfern in Theorie und Praxis",
+    "Spezielle Erste-Hilfe-Schulungen für Kinder- und Betreuungseinrichtungen",
+    "Ausbildung von Rhein-Ruhr Helden mit erweiterten Handlungskompetenzen",
+    "Kindernotfallseminare für Eltern, Erzieher und Betreuungspersonal",
+    "Erste-Hilfe-Kurse speziell für Trainer in Sportvereinen",
+    "AED-Schulungen (Automatisierter Externer Defibrillator) mit praktischen Übungen",
+  ];
+
+  const getServiceIcon = (tab) => {
+    switch (tab) {
+      case "brandschutz":
+        return <Flame className="h-6 w-6" />;
+      case "arbeitsschutz":
+        return <UserCheck className="h-6 w-6" />;
+      case "digitaleschulung":
+        return <Monitor className="h-6 w-6" />;
+      case "erstehilfe":
+        return <Heart className="h-6 w-6" />;
+      default:
+        return <Flame className="h-6 w-6" />;
+    }
+  };
+
+  const getServiceImage = (tab) => {
+    switch (tab) {
+      case "brandschutz":
+        return "https://images.unsplash.com/photo-1599177254953-42253b5e3d65?q=80&w=2070&auto=format&fit=crop";
+      case "arbeitsschutz":
+        return "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=2070&auto=format&fit=crop";
+      case "digitaleschulung":
+        return "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop";
+      case "erstehilfe":
+        return "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop";
+      default:
+        return "https://images.unsplash.com/photo-1599177254953-42253b5e3d65?q=80&w=2070&auto=format&fit=crop";
+    }
+  };
+
+  const getServiceTitle = (tab) => {
+    switch (tab) {
+      case "brandschutz":
+        return "Brandschutz";
+      case "arbeitsschutz":
+        return "Arbeitsschutz";
+      case "digitaleschulung":
+        return "Digitale Schulungsangebote";
+      case "erstehilfe":
+        return "Erste-Hilfe-Schulungen";
+      default:
+        return "Brandschutz";
+    }
+  };
+
+  const getServiceDescription = (tab) => {
+    switch (tab) {
+      case "brandschutz":
+        return "Umfassender Brandschutz für die Sicherheit Ihrer Mitarbeiter und Einrichtungen.";
+      case "arbeitsschutz":
+        return "Maßgeschneiderte Arbeitsschutzlösungen für ein sicheres Arbeitsumfeld.";
+      case "digitaleschulung":
+        return "Moderne digitale Schulungskonzepte für flexible und effiziente Weiterbildung.";
+      case "erstehilfe":
+        return "Professionelle Erste-Hilfe-Schulungen durch unseren Partner Notfallschulungen Rhein-Ruhr.";
+      default:
+        return "Umfassender Brandschutz für die Sicherheit Ihrer Mitarbeiter und Einrichtungen.";
+    }
+  };
+
+  const getServicesList = (tab) => {
+    switch (tab) {
+      case "brandschutz":
+        return brandschutzServices;
+      case "arbeitsschutz":
+        return arbeitsschutzServices;
+      case "digitaleschulung":
+        return digitaleSchulungenServices;
+      case "erstehilfe":
+        return ersteHilfeServices;
+      default:
+        return brandschutzServices;
+    }
+  };
+
+  const getServiceButtonText = (tab) => {
+    switch (tab) {
+      case "brandschutz":
+        return "Für Brandschutz beraten lassen";
+      case "arbeitsschutz":
+        return "Für Arbeitsschutz beraten lassen";
+      case "digitaleschulung":
+        return "Zu den digitalen Angeboten";
+      case "erstehilfe":
+        return "Zur Website von Notfallschulungen Rhein-Ruhr";
+      default:
+        return "Für Brandschutz beraten lassen";
+    }
+  };
+
+  const getServiceButtonAction = (tab) => {
+    if (tab === "erstehilfe") {
+      return () => window.open("https://www.notfallschulungen-rhein-ruhr.de/", "_blank");
+    } else {
+      return () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section id="services" className="section-padding">
       <Container>
@@ -42,13 +159,13 @@ const Services = () => {
 
           <ScrollReveal delay={200}>
             <p className="text-gray-700 text-lg">
-              Wir bieten umfassende Dienstleistungen in den Bereichen Brandschutz und Arbeitsschutz an,
+              Wir bieten umfassende Dienstleistungen in den Bereichen Brandschutz, Arbeitsschutz und digitale Schulungen an,
               die auf die spezifischen Anforderungen Ihres Unternehmens zugeschnitten sind.
             </p>
           </ScrollReveal>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-center mb-10 space-y-4 md:space-y-0 md:space-x-4">
+        <div className="flex flex-col md:flex-row justify-center mb-10 space-y-4 md:space-y-0 md:space-x-4 flex-wrap">
           <ScrollReveal>
             <button
               onClick={() => setActiveTab("brandschutz")}
@@ -72,22 +189,38 @@ const Services = () => {
               Arbeitsschutz
             </button>
           </ScrollReveal>
+
+          <ScrollReveal delay={150}>
+            <button
+              onClick={() => setActiveTab("digitaleschulung")}
+              className={`px-6 py-3 rounded-lg font-medium transition-all ${activeTab === "digitaleschulung"
+                ? "bg-nrr-blue text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+            >
+              Digitale Schulungsangebote
+            </button>
+          </ScrollReveal>
+
+          <ScrollReveal delay={200}>
+            <button
+              onClick={() => setActiveTab("erstehilfe")}
+              className={`px-6 py-3 rounded-lg font-medium transition-all ${activeTab === "erstehilfe"
+                ? "bg-nrr-blue text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+            >
+              Erste-Hilfe-Schulungen
+            </button>
+          </ScrollReveal>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <ScrollReveal direction="right">
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
               <img
-                src={
-                  activeTab === "brandschutz"
-                    ? "https://images.unsplash.com/photo-1599177254953-42253b5e3d65?q=80&w=2070&auto=format&fit=crop"
-                    : "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=2070&auto=format&fit=crop"
-                }
-                alt={
-                  activeTab === "brandschutz"
-                    ? "Brandschutz Dienstleistungen"
-                    : "Arbeitsschutz Dienstleistungen"
-                }
+                src={getServiceImage(activeTab)}
+                alt={`${getServiceTitle(activeTab)} Leistungen`}
                 className="w-full h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20"></div>
@@ -95,29 +228,23 @@ const Services = () => {
               <div className="absolute bottom-0 left-0 p-8">
                 <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg max-w-md">
                   <h3 className="text-2xl font-bold mb-3 text-nrr-blue">
-                    {activeTab === "brandschutz" ? (
-                      <span className="flex items-center">
-                        <Flame className="mr-2 h-6 w-6" /> Brandschutz
-                      </span>
-                    ) : (
-                      <span className="flex items-center">
-                        <Shield className="mr-2 h-6 w-6" /> Arbeitsschutz
-                      </span>
-                    )}
+                    <span className="flex items-center">
+                      {getServiceIcon(activeTab)}
+                      <span className="ml-2">{getServiceTitle(activeTab)}</span>
+                    </span>
                   </h3>
                   <p className="text-gray-700 mb-4">
-                    {activeTab === "brandschutz"
-                      ? "Umfassender Brandschutz für die Sicherheit Ihrer Mitarbeiter und Einrichtungen."
-                      : "Maßgeschneiderte Arbeitsschutzlösungen für ein sicheres Arbeitsumfeld."}
+                    {getServiceDescription(activeTab)}
                   </p>
                   <CustomButton
                     variant="primary"
                     size="md"
-                    onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={getServiceButtonAction(activeTab)}
                   >
-                    {activeTab === "brandschutz"
-                      ? "Für Brandschutz beraten lassen"
-                      : "Für Arbeitsschutz beraten lassen"}
+                    {getServiceButtonText(activeTab)}
+                    {activeTab === "erstehilfe" && (
+                      <ExternalLink className="ml-1 h-4 w-4" />
+                    )}
                   </CustomButton>
                 </div>
               </div>
@@ -127,25 +254,18 @@ const Services = () => {
           <div>
             <ScrollReveal>
               <h3 className="text-2xl font-bold mb-6">
-                {activeTab === "brandschutz"
-                  ? "Unsere Brandschutz-Leistungen"
-                  : "Unsere Arbeitsschutz-Leistungen"}
+                {activeTab === "erstehilfe"
+                  ? "Leistungen unseres Partners Notfallschulungen Rhein-Ruhr"
+                  : `Unsere ${getServiceTitle(activeTab)}`}
               </h3>
             </ScrollReveal>
 
             <ul className="space-y-4">
-              {(activeTab === "brandschutz"
-                ? brandschutzServices
-                : arbeitsschutzServices
-              ).map((service, index) => (
+              {getServicesList(activeTab).map((service, index) => (
                 <ScrollReveal key={index} delay={100 + index * 100}>
                   <li className="flex p-4 rounded-lg before-glass service-card">
                     <div className="mr-4 flex-shrink-0 text-nrr-blue">
-                      {activeTab === "brandschutz" ? (
-                        <Flame className="h-6 w-6" />
-                      ) : (
-                        <UserCheck className="h-6 w-6" />
-                      )}
+                      {getServiceIcon(activeTab)}
                     </div>
                     <div>
                       <p className="text-gray-800">{service}</p>
@@ -157,13 +277,25 @@ const Services = () => {
 
             <ScrollReveal delay={500}>
               <div className="mt-8">
-                <CustomButton
-                  variant="outline"
-                  size="md"
-                  onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                >
-                  Unverbindliches Angebot anfordern
-                </CustomButton>
+                {activeTab === "erstehilfe" ? (
+                  <CustomButton
+                    variant="primary"
+                    size="md"
+                    onClick={() => window.open("https://www.notfallschulungen-rhein-ruhr.de/", "_blank")}
+                    className="flex items-center"
+                  >
+                    Zur Website von Notfallschulungen Rhein-Ruhr
+                    <ExternalLink className="ml-1 h-4 w-4" />
+                  </CustomButton>
+                ) : (
+                  <CustomButton
+                    variant="outline"
+                    size="md"
+                    onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    Unverbindliches Angebot anfordern
+                  </CustomButton>
+                )}
               </div>
             </ScrollReveal>
           </div>
