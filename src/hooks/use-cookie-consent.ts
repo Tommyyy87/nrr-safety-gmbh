@@ -1,3 +1,5 @@
+// src/hooks/use-cookie-consent.ts
+
 import { useState, useEffect } from "react";
 import type { CookiePreferences } from "@/components/CookieConsent";
 
@@ -60,7 +62,7 @@ export function useCookieConsent() {
                     setShowBanner(true);
                 }
             } catch (error) {
-                console.error("Fehler beim Laden der Cookie-Einstellungen:", error);
+                console.warn("Fehler beim Laden der Cookie-Einstellungen:", error);
                 setShowBanner(true);
             }
         };
@@ -70,57 +72,81 @@ export function useCookieConsent() {
 
     // Cookie-Einstellungen speichern
     const saveConsent = (newPreferences: CookiePreferences, hasConsented: boolean) => {
-        const consent: StoredConsent = {
-            version: COOKIE_VERSION,
-            preferences: newPreferences,
-            consentGiven: hasConsented,
-            lastUpdated: new Date().toISOString(),
-        };
+        try {
+            const consent: StoredConsent = {
+                version: COOKIE_VERSION,
+                preferences: newPreferences,
+                consentGiven: hasConsented,
+                lastUpdated: new Date().toISOString(),
+            };
 
-        localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consent));
-        setPreferences(newPreferences);
-        setConsentGiven(hasConsented);
+            localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consent));
+            setPreferences(newPreferences);
+            setConsentGiven(hasConsented);
+        } catch (error) {
+            console.warn("Fehler beim Speichern der Cookie-Einstellungen:", error);
+        }
     };
 
     // Alle Cookies akzeptieren
     const acceptAll = () => {
-        const allAccepted: CookiePreferences = {
-            necessary: true,
-            analytics: true,
-            functional: true,
-        };
+        try {
+            const allAccepted: CookiePreferences = {
+                necessary: true,
+                analytics: true,
+                functional: true,
+            };
 
-        saveConsent(allAccepted, true);
-        setShowBanner(false);
-        setShowSettings(false);
+            saveConsent(allAccepted, true);
+            setShowBanner(false);
+            setShowSettings(false);
+        } catch (error) {
+            console.warn("Fehler beim Akzeptieren aller Cookies:", error);
+        }
     };
 
     // Ausgewählte Cookies akzeptieren
     const acceptSelected = (selectedPreferences: CookiePreferences) => {
-        saveConsent({ ...selectedPreferences, necessary: true }, true);
-        setShowBanner(false);
-        setShowSettings(false);
+        try {
+            saveConsent({ ...selectedPreferences, necessary: true }, true);
+            setShowBanner(false);
+            setShowSettings(false);
+        } catch (error) {
+            console.warn("Fehler beim Akzeptieren ausgewählter Cookies:", error);
+        }
     };
 
     // Alle Cookies ablehnen (nur notwendige akzeptieren)
     const declineAll = () => {
-        saveConsent({ ...defaultPreferences, necessary: true }, true);
-        setShowBanner(false);
-        setShowSettings(false);
+        try {
+            saveConsent({ ...defaultPreferences, necessary: true }, true);
+            setShowBanner(false);
+            setShowSettings(false);
+        } catch (error) {
+            console.warn("Fehler beim Ablehnen aller Cookies:", error);
+        }
     };
 
     // Cookie-Einstellungsdialog öffnen
     const openSettings = () => {
-        setShowSettings(true);
-        setShowBanner(false);
+        try {
+            setShowSettings(true);
+            setShowBanner(false);
+        } catch (error) {
+            console.warn("Fehler beim Öffnen der Cookie-Einstellungen:", error);
+        }
     };
 
     // Cookie-Einstellungen zurücksetzen
     const resetConsent = () => {
-        localStorage.removeItem(COOKIE_CONSENT_KEY);
-        setPreferences(defaultPreferences);
-        setConsentGiven(false);
-        setShowBanner(true);
+        try {
+            localStorage.removeItem(COOKIE_CONSENT_KEY);
+            setPreferences(defaultPreferences);
+            setConsentGiven(false);
+            setShowBanner(true);
+        } catch (error) {
+            console.warn("Fehler beim Zurücksetzen der Cookie-Einstellungen:", error);
+        }
     };
 
     return {

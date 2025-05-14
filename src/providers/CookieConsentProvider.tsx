@@ -1,3 +1,5 @@
+// src/providers/CookieConsentProvider.tsx
+
 import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { useCookieConsent } from '@/hooks/use-cookie-consent';
 import CookieBanner from '@/components/CookieBanner';
@@ -47,8 +49,12 @@ export const CookieConsentProvider: React.FC<CookieConsentProviderProps> = ({ ch
 
     // Cookie-Einstellungen anwenden, wenn sie sich ändern
     useEffect(() => {
-        if (consentGiven) {
-            processCookiePreferences(preferences);
+        try {
+            if (consentGiven) {
+                processCookiePreferences(preferences);
+            }
+        } catch (error) {
+            console.warn('Fehler beim Anwenden der Cookie-Einstellungen:', error);
         }
     }, [preferences, consentGiven]);
 

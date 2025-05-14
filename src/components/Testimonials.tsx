@@ -7,29 +7,36 @@ import LogoSlider from "./LogoSlider";
 const Testimonials = () => {
   const testimonials = [
     {
-      quote: "Dank NRR safety fühlen wir uns bestens betreut – schneller Service und fachkundige Beratung!",
-      company: "Musterfirma GmbH",
-      logo: "https://placehold.co/200x80/eef/fff?text=Musterfirma",
+      quote: "Ich habe eine tolle Fortbildung bei Frau Melissa Reinbothe zum Ersthelfer besucht. Die Fortbildung war sehr lehrreich, sie hat tolle Eselsbrücken gebaut, es wurde nicht langweilig und es hat Spaß gemacht. Vielen Dank für den tollen Tag.",
+      company: "Marion Eßler",
+      // logo: "https://placehold.co/200x80/eef/fff?text=Marion+Eßler",
       rating: 5,
     },
     {
-      quote: "Professionelles Team und zuverlässige Wartung. Wir setzen auf NRR safety für unseren Brandschutz.",
-      company: "Beispiel AG",
-      logo: "https://placehold.co/200x80/eef/fff?text=Beispiel+AG",
+      quote: "Schulung durch Frau Melissa Reinbothe bei der Firma AVL Neuss. Insgesamt war es eine sehr lehrreiche Schulung, die auch viel Spaß gemacht hat, mit einer souveränen und kompetenten Lehrkraft. Vielen Dank für diesen Tag. Wir freuen uns aufs nächste mal.",
+      company: "AVL Neuss",
+      // logo: "https://placehold.co/200x80/eef/fff?text=AVL+Neuss",
       rating: 5,
     },
     {
-      quote: "Kompetente Schulungen und individuelle Beratung – NRR safety ist ein verlässlicher Partner.",
-      company: "Muster GmbH & Co. KG",
-      logo: "https://placehold.co/200x80/eef/fff?text=Muster+GmbH",
+      quote: "Melissa Reinbothe war so eine gute Lehrerin. Es war sehr interaktiv und wurde nicht langweilig. Es wurde auf unsere Bedürfnisse eingegangen und sehr professionell, aber doch familiär und freundlich gestaltet.",
+      company: "Dogukan",
+      // logo: "https://placehold.co/200x80/eef/fff?text=Dogukan",
       rating: 5,
     },
     {
-      quote: "Schnelle Reaktionszeiten und maßgeschneiderte Lösungen für unsere Sicherheitsanforderungen.",
-      company: "Sample Corp.",
-      logo: "https://placehold.co/200x80/eef/fff?text=Sample+Corp",
+      quote: "Die Liebe Leonie hat uns sehr interessiert alle Themen nahegelegt und praktisch umgesetzt. Es hat sehr viel Spaß gemacht und man konnte trotz des wichtigen und ernstes Themas miteinander lachen. :)",
+      company: "Luna Specht",
+      // logo: "https://placehold.co/200x80/eef/fff?text=Luna+Specht",
       rating: 5,
     },
+    {
+      quote: "Sehr interessante Schulung, sehr informativ aber trotzdem locker gestaltet.",
+      company: "Dagmar Pahl",
+      // logo: "https://placehold.co/200x80/eef/fff?text=Dagmar+Pahl",
+      rating: 5,
+    },
+    
   ];
 
   // Partner- und Kunden-Logos aus den vorhandenen Dateien im public/partner-Ordner

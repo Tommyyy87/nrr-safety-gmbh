@@ -1,3 +1,5 @@
+// src/utils/cookie-utils.ts
+
 import type { CookiePreferences } from "@/components/CookieConsent";
 
 /**
@@ -6,14 +8,19 @@ import type { CookiePreferences } from "@/components/CookieConsent";
  * @param preferences Die Cookie-Einstellungen
  */
 export function initializeAnalytics(preferences: CookiePreferences) {
-    // Wenn Analytics-Cookies verweigert wurden, Google Analytics deaktivieren
-    if (!preferences.analytics) {
-        disableAnalytics();
-        return;
-    }
+    try {
+        // Wenn Analytics-Cookies verweigert wurden, Google Analytics deaktivieren
+        if (!preferences.analytics) {
+            disableAnalytics();
+            return;
+        }
 
-    // Google Analytics aktivieren
-    enableAnalytics();
+        // Google Analytics aktivieren
+        enableAnalytics();
+    } catch (error) {
+        console.warn("Fehler bei der Initialisierung von Analytics:", error);
+        // Fehler abfangen und nicht weitergeben
+    }
 }
 
 /**
@@ -38,14 +45,11 @@ function enableAnalytics() {
                 window.ga('set', 'anonymizeIp', false);
             }
         } else {
-            // Analytics noch nicht geladen, wir könnten hier das Script laden
             console.info('Google Analytics wurde entsprechend der Cookie-Einstellungen aktiviert.');
-
-            // HINWEIS: Das Laden des Google Analytics-Skripts müsste hier implementiert werden,
-            // wenn es nicht bereits über Firebase automatisch geladen wird.
         }
     } catch (error) {
-        console.error('Fehler beim Aktivieren von Analytics:', error);
+        console.warn('Fehler beim Aktivieren von Analytics:', error);
+        // Fehler abfangen und nicht weitergeben
     }
 }
 
@@ -74,7 +78,8 @@ function disableAnalytics() {
 
         console.info('Google Analytics wurde entsprechend der Cookie-Einstellungen deaktiviert.');
     } catch (error) {
-        console.error('Fehler beim Deaktivieren von Analytics:', error);
+        console.warn('Fehler beim Deaktivieren von Analytics:', error);
+        // Fehler abfangen und nicht weitergeben
     }
 }
 
@@ -84,16 +89,19 @@ function disableAnalytics() {
  * @param preferences Die Cookie-Einstellungen
  */
 export function initializeFunctionalCookies(preferences: CookiePreferences) {
-    if (!preferences.functional) {
-        // Funktionale Cookies deaktivieren
-        console.info('Funktionale Cookies wurden deaktiviert.');
-        return;
+    try {
+        if (!preferences.functional) {
+            // Funktionale Cookies deaktivieren
+            console.info('Funktionale Cookies wurden deaktiviert.');
+            return;
+        }
+
+        // Funktionale Cookies aktivieren
+        console.info('Funktionale Cookies wurden aktiviert.');
+    } catch (error) {
+        console.warn('Fehler beim Initialisieren funktionaler Cookies:', error);
+        // Fehler abfangen und nicht weitergeben
     }
-
-    // Funktionale Cookies aktivieren
-    console.info('Funktionale Cookies wurden aktiviert.');
-
-    // Hier könnten zusätzliche funktionale Cookie-Features aktiviert werden
 }
 
 /**
@@ -102,13 +110,18 @@ export function initializeFunctionalCookies(preferences: CookiePreferences) {
  * @param preferences Die Cookie-Einstellungen
  */
 export function processCookiePreferences(preferences: CookiePreferences) {
-    // Notwendige Cookies werden immer geladen
+    try {
+        // Notwendige Cookies werden immer geladen
 
-    // Analytics-Cookies verarbeiten
-    initializeAnalytics(preferences);
+        // Analytics-Cookies verarbeiten
+        initializeAnalytics(preferences);
 
-    // Funktionale Cookies verarbeiten
-    initializeFunctionalCookies(preferences);
+        // Funktionale Cookies verarbeiten
+        initializeFunctionalCookies(preferences);
+    } catch (error) {
+        console.warn('Fehler bei der Verarbeitung der Cookie-Einstellungen:', error);
+        // Fehler abfangen und nicht weitergeben
+    }
 }
 
 // Typdefinitionen für Google Analytics
