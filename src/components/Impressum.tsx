@@ -42,16 +42,16 @@ const Impressum = () => {
             <h2 className="text-2xl font-semibold mt-8 mb-4">Angaben gemäß § 5 TMG</h2>
             <p>
               <strong>NRR safety GmbH</strong><br />
-              Neumarkt 8<br />
-              41460 Neuss<br />
+              Giesbertstraße 26<br />
+              46117 Oberhausen<br />
               Deutschland
             </p>
-            
+
             <p>
-              <strong>Handelsregister:</strong> HRB 20837<br />
-              <strong>Registergericht:</strong> Amtsgericht Mönchengladbach
+              <strong>Handelsregister:</strong> HRB 37349<br />
+              <strong>Registergericht:</strong> Amtsgericht Duisburg
             </p>
-            
+
             <h3 className="text-xl font-medium mt-6 mb-3">Vertreten durch</h3>
             <p>
               Geschäftsführer: Dennis Meenke und Michael Grotefels
@@ -61,7 +61,7 @@ const Impressum = () => {
           <ScrollReveal delay={100}>
             <h2 className="text-2xl font-semibold mt-8 mb-4">Kontakt</h2>
             <p>
-              <strong>Telefon:</strong> +49 1575 6686199<br />
+              <strong>Telefon:</strong> +49 157 80589539 <br />
               <strong>E-Mail:</strong> team@nrr-safety.de
             </p>
           </ScrollReveal>
@@ -70,7 +70,7 @@ const Impressum = () => {
             <h2 className="text-2xl font-semibold mt-8 mb-4">Umsatzsteuer-ID</h2>
             <p>
               <strong>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:</strong><br />
-              Steuernummer: 114/5840/444 (Finanzamt Grevenbroich)
+              Steuernummer: 123/57434/473 (Finanzamt Oberhausen)
             </p>
           </ScrollReveal>
 

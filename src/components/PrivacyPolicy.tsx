@@ -62,16 +62,16 @@ const PrivacyPolicy = () => {
             <p>
               <strong>NRR safety GmbH</strong>
               <br />
-              Neumarkt 8
+              Giesbertstraße 26
               <br />
-              41460 Neuss
+              46117 Oberhausen
               <br />
               Deutschland
             </p>
             <p>
               <strong>E-Mail:</strong> team@nrr-safety.de
               <br />
-              <strong>Telefon:</strong> +49 1575 6686199
+              <strong>Telefon:</strong> +49 157 80589539 
             </p>
           </ScrollReveal>
 
@@ -163,7 +163,7 @@ const PrivacyPolicy = () => {
               <li>Instagram</li>
             </ul>
             <p>
-              Wir weisen darauf hin, dass beim Besuch der verlinkten Social-Media-Plattformen die Datenschutzbestimmungen und Datenverarbeitungen der jeweiligen Plattformbetreiber gelten. Wir haben keinen Einfluss auf die Datenerhebung und deren weitere Verwendung durch die Plattformen. 
+              Wir weisen darauf hin, dass beim Besuch der verlinkten Social-Media-Plattformen die Datenschutzbestimmungen und Datenverarbeitungen der jeweiligen Plattformbetreiber gelten. Wir haben keinen Einfluss auf die Datenerhebung und deren weitere Verwendung durch die Plattformen.
             </p>
             <p>
               Erst wenn Sie auf ein entsprechendes Symbol klicken und dadurch zu dem entsprechenden Netzwerk weitergeleitet werden, werden Ihre Daten an das jeweilige Netzwerk übertragen.

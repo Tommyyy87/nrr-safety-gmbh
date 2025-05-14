@@ -61,7 +61,7 @@ const Agb = () => {
                             <h2 className="text-2xl font-semibold mt-8 mb-4">1. Geltungsbereich</h2>
                             <div className="space-y-4">
                                 <p>
-                                    1.1 Diese Allgemeinen Geschäftsbedingungen (nachfolgend "AGB") der NRR safety GmbH, Neumarkt 8, 41460 Neuss, Deutschland (nachfolgend "Verkäufer"), gelten für alle Verträge, die ein Verbraucher oder Unternehmer (nachfolgend „Kunde") mit dem Verkäufer hinsichtlich der vom Verkäufer angebotenen Waren und Dienstleistungen im Bereich Brandschutz und Arbeitsschutz abschließt. Hiermit wird der Einbeziehung von eigenen Bedingungen des Kunden widersprochen, es sei denn, es ist etwas anderes vereinbart.
+                                    1.1 Diese Allgemeinen Geschäftsbedingungen (nachfolgend "AGB") der NRR safety GmbH, Giesbertstraße 26, 46117 Oberhausen, Deutschland (nachfolgend "Verkäufer"), gelten für alle Verträge, die ein Verbraucher oder Unternehmer (nachfolgend „Kunde") mit dem Verkäufer hinsichtlich der vom Verkäufer angebotenen Waren und Dienstleistungen im Bereich Brandschutz und Arbeitsschutz abschließt. Hiermit wird der Einbeziehung von eigenen Bedingungen des Kunden widersprochen, es sei denn, es ist etwas anderes vereinbart.
                                 </p>
                                 <p>
                                     1.2 Für Verträge über die Lieferung digitaler Inhalte gelten diese AGB entsprechend, sofern insoweit nicht ausdrücklich etwas Abweichendes geregelt ist.

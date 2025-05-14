@@ -247,7 +247,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium mb-1">Telefon</p>
-                      <p className="text-gray-700"><a href="tel:+4915756686199">+49 1575 6686199</a></p>
+                      <p className="text-gray-700"><a href="tel:+4915780589539">+49 157 80589539 </a></p>
                     </div>
                   </div>
 
@@ -256,7 +256,7 @@ const Contact = () => {
                       <MapPin className="h-6 w-6" />
                     </div>
                     <div>
-                      <p className="font-medium mb-1">Adresse</p>
+                      <p className="font-medium mb-1">Adresse Büro</p>
                       <p className="text-gray-700"><a href="https://maps.app.goo.gl/Dicy2gMBK4LRY3sJ7" target="_blank">Neumarkt 8, 41460 Neuss</a></p>
                     </div>
                   </div>

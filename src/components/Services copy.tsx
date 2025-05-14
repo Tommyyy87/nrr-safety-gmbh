@@ -16,12 +16,10 @@ const Services = () => {
   ];
 
   const arbeitsschutzServices = [
-    "Externe Fachkräfte für Arbeitssicherheit & Stellung von Betriebsärzten",
-    "Schulung & Unterweisung: Sicherheitsbeauftragte, Gefahrstoffe (§14), Atemschutz (DGUV 112-190), Behälterarbeiten & Freimessen (DGUV 113-004)",
-    "Ausbildung & Unterweisung für Gabelstapler, Hubarbeitsbühnen, Krane & Arbeiten in der Höhe",
-    "Prüfung & Unterweisung: Leitern, Tritte (DGUV 208-016), STK/MDK für med. Produkte & elektrische Betriebsmittel",
-    "Persönliche Schutzausrüstung (PSA/PSAgA) – Beratung, Auswahl, Schulung",
-    "Erstellung von Betriebsanweisungen & Notfalltafeln für gefährliche Stoffe",
+    "Stellung externer Fachkräfte für Arbeitssicherheit",
+    "Ausbildung & Unterweisung für Gabelstapler, Hubarbeitsbühnen, Krane & Höhenarbeit",
+    "Prüfung und Sicherheitskonzepte für Arbeits- und Schutzgerüste, Aufzugsanlagen & elektrische Betriebsmittel",
+    "Persönliche Schutzausrüstung (PSA) – Beratung, Auswahl und Schulung",
   ];
 
   return (
@@ -33,16 +31,16 @@ const Services = () => {
               Unsere Leistungen
             </span>
           </ScrollReveal>
-
+          
           <ScrollReveal delay={100}>
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Professionelle Sicherheitslösungen für Ihr Unternehmen
             </h2>
           </ScrollReveal>
-
+          
           <ScrollReveal delay={200}>
             <p className="text-gray-700 text-lg">
-              Wir bieten umfassende Dienstleistungen in den Bereichen Brandschutz und Arbeitsschutz an,
+              Wir bieten umfassende Dienstleistungen in den Bereichen Brandschutz und Arbeitsschutz an, 
               die auf die spezifischen Anforderungen Ihres Unternehmens zugeschnitten sind.
             </p>
           </ScrollReveal>
@@ -52,22 +50,24 @@ const Services = () => {
           <ScrollReveal>
             <button
               onClick={() => setActiveTab("brandschutz")}
-              className={`px-6 py-3 rounded-lg font-medium transition-all ${activeTab === "brandschutz"
-                ? "bg-nrr-blue text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+              className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                activeTab === "brandschutz"
+                  ? "bg-nrr-blue text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
               Brandschutz
             </button>
           </ScrollReveal>
-
+          
           <ScrollReveal delay={100}>
             <button
               onClick={() => setActiveTab("arbeitsschutz")}
-              className={`px-6 py-3 rounded-lg font-medium transition-all ${activeTab === "arbeitsschutz"
-                ? "bg-nrr-blue text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+              className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                activeTab === "arbeitsschutz"
+                  ? "bg-nrr-blue text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
             >
               Arbeitsschutz
             </button>
@@ -91,7 +91,7 @@ const Services = () => {
                 className="w-full h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20"></div>
-
+              
               <div className="absolute bottom-0 left-0 p-8">
                 <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg max-w-md">
                   <h3 className="text-2xl font-bold mb-3 text-nrr-blue">
