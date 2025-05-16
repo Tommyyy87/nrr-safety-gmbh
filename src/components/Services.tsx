@@ -5,6 +5,12 @@ import CustomButton from "./ui/CustomButton";
 import { Shield, UserCheck, Flame, Monitor, Heart, ExternalLink } from "lucide-react";
 import ScrollReveal from "./ui/ScrollReveal";
 
+// Optimale Bildgrößen:
+// - Seitenverhältnis: 16:9 oder 4:3
+// - Auflösung: 1200-1500px Breite, 800-900px Höhe
+// - Dateigröße: <300KB für schnelle Ladezeiten
+// - Format: WebP oder optimiertes JPEG
+
 const Services = () => {
   const [activeTab, setActiveTab] = useState("brandschutz");
 
@@ -61,15 +67,15 @@ const Services = () => {
   const getServiceImage = (tab) => {
     switch (tab) {
       case "brandschutz":
-        return "https://images.unsplash.com/photo-1599177254953-42253b5e3d65?q=80&w=2070&auto=format&fit=crop";
+        return "/reiter1.webp";
       case "arbeitsschutz":
-        return "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=2070&auto=format&fit=crop";
+        return "/reiter1.webp";
       case "digitaleschulung":
-        return "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2070&auto=format&fit=crop";
+        return "/reiter1.webp";
       case "erstehilfe":
-        return "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop";
+        return "/reiter4.webp"; // Hier wurde das lokale Bild eingebunden
       default:
-        return "https://images.unsplash.com/photo-1599177254953-42253b5e3d65?q=80&w=2070&auto=format&fit=crop";
+        return "/reiter1.webp";
     }
   };
 
@@ -141,6 +147,9 @@ const Services = () => {
     }
   };
 
+  // Prüfen, ob der aktuelle Tab viele Leistungspunkte hat (für dynamische Bildanpassung)
+  const hasMoreServices = activeTab === "erstehilfe";
+
   return (
     <section id="services" className="section-padding">
       <Container>
@@ -165,7 +174,7 @@ const Services = () => {
           </ScrollReveal>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-center mb-10 space-y-4 md:space-y-0 md:space-x-4 flex-wrap">
+        <div className="flex flex-wrap justify-center mb-10 gap-4">
           <ScrollReveal>
             <button
               onClick={() => setActiveTab("brandschutz")}
@@ -215,13 +224,13 @@ const Services = () => {
           </ScrollReveal>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div className={`grid grid-cols-1 ${hasMoreServices ? 'lg:grid-cols-1 xl:grid-cols-2' : 'lg:grid-cols-2'} gap-10 items-start`}>
           <ScrollReveal direction="right">
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={getServiceImage(activeTab)}
                 alt={`${getServiceTitle(activeTab)} Leistungen`}
-                className="w-full h-[500px] object-cover"
+                className="w-full h-[500px] object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20"></div>
 
@@ -260,20 +269,20 @@ const Services = () => {
               </h3>
             </ScrollReveal>
 
-            <ul className="space-y-4">
+            <div className={`grid grid-cols-1 ${hasMoreServices ? 'md:grid-cols-2' : ''} gap-4`}>
               {getServicesList(activeTab).map((service, index) => (
                 <ScrollReveal key={index} delay={100 + index * 100}>
-                  <li className="flex p-4 rounded-lg before-glass service-card">
+                  <div className="flex p-4 rounded-lg before-glass service-card">
                     <div className="mr-4 flex-shrink-0 text-nrr-blue">
                       {getServiceIcon(activeTab)}
                     </div>
                     <div>
                       <p className="text-gray-800">{service}</p>
                     </div>
-                  </li>
+                  </div>
                 </ScrollReveal>
               ))}
-            </ul>
+            </div>
 
             <ScrollReveal delay={500}>
               <div className="mt-8">
