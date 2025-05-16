@@ -208,15 +208,24 @@ const Header = () => {
                             <div className="relative">
                                 <div className="relative rounded-2xl overflow-hidden shadow-2xl transform-gpu">
                                     <img
-                                        src="https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?q=80&w=2070&auto=format&fit=crop"
-                                        alt="Professioneller Brandschutz"
-                                        className="w-full object-cover h-[600px]"
+                                        src="/team.webp"
+                                        alt="Die Geschäftsführer der NRR safety GmbH"
+                                        className="w-full h-[500px] sm:h-[600px] object-cover object-center"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+
+                                    {/* Info-Box direkt im Bild für bessere mobile Darstellung */}
+                                    <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg max-w-[90%] sm:hidden">
+                                        <p className="text-sm font-medium text-nrr-blue">
+                                            Ihre Ansprechpartner für Sicherheit
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="absolute -bottom-6 -right-6 bg-white rounded-lg p-4 shadow-xl before-glass">
+
+                                {/* Info-Box als Overlay nur für größere Bildschirme */}
+                                <div className="hidden sm:block absolute -bottom-6 -right-6 bg-white rounded-lg p-4 shadow-xl before-glass">
                                     <p className="text-sm font-medium text-nrr-blue">
-                                        Professioneller Brandschutz für Ihr Unternehmen
+                                        Ihre Ansprechpartner für Sicherheit
                                     </p>
                                 </div>
                             </div>
