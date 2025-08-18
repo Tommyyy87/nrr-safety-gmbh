@@ -11,6 +11,7 @@ import Impressum from "./components/Impressum";
 import Agb from "./components/Agb";
 import CookieSettingsPage from "./pages/CookieSettings";
 import { CookieConsentProvider } from "./providers/CookieConsentProvider";
+import ErsteHilfeKarrierePage from "./pages/ErsteHilfeKarriere"; // NEUER IMPORT
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,10 @@ const App = () => (
             <Route path="/impressum" element={<Impressum />} />
             <Route path="/agb" element={<Agb />} />
             <Route path="/cookie-einstellungen" element={<CookieSettingsPage />} />
+
+            {/* NEUE ROUTE FÜR DAS IFRAME-FORMULAR */}
+            <Route path="/karriere-erste-hilfe" element={<ErsteHilfeKarrierePage />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
