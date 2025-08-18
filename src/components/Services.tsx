@@ -69,9 +69,9 @@ const Services = () => {
       case "brandschutz":
         return "/reiter1.webp";
       case "arbeitsschutz":
-        return "/reiter1.webp";
+        return "/reiter2.webp";
       case "digitaleschulung":
-        return "/reiter1.webp";
+        return "/reiter3.webp";
       case "erstehilfe":
         return "/reiter4.webp"; // Hier wurde das lokale Bild eingebunden
       default:
