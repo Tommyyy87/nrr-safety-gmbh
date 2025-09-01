@@ -5,7 +5,7 @@ import { z } from "zod";
 import emailjs from "@emailjs/browser";
 import CustomButton from "@/components/ui/CustomButton";
 import { AlertCircle, Check, Upload, X } from "lucide-react";
-import Container from "@/components/ui/Container"; // KORREKTUR: Fehlender Import hinzugefügt
+import Container from "@/components/ui/Container";
 
 // --- Typen-Definitionen für die Konfiguration ---
 
@@ -15,16 +15,16 @@ type FormFieldConfig = {
   name: string;
   label: string;
   type:
-    | "text"
-    | "email"
-    | "tel"
-    | "date"
-    | "textarea"
-    | "select"
-    | "radio"
-    | "checkbox-group"
-    | "file"
-    | "checkbox";
+  | "text"
+  | "email"
+  | "tel"
+  | "date"
+  | "textarea"
+  | "select"
+  | "radio"
+  | "checkbox-group"
+  | "file"
+  | "checkbox";
   options?: FieldOption[];
   placeholder?: string;
   validation: z.ZodTypeAny;
@@ -181,9 +181,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                   <select
                     {...field}
                     id={fieldConfig.name}
-                    className={`${baseClasses} bg-white ${
-                      error ? errorClasses : normalClasses
-                    }`}
+                    className={`${baseClasses} bg-white ${error ? errorClasses : normalClasses
+                      }`}
                   >
                     <option value="">Bitte wählen...</option>
                     {fieldConfig.options?.map((opt) => (
@@ -275,19 +274,19 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                     )}
                   </div>
                 );
-               case "checkbox":
-                 return (
-                    <label className="flex items-start">
-                        <input
-                            type="checkbox"
-                            {...field}
-                            id={fieldConfig.name}
-                            checked={!!field.value}
-                            className="h-4 w-4 text-nrr-blue focus:ring-nrr-blue border-gray-300 rounded mt-1"
-                        />
-                        <span className="ml-2 text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: fieldConfig.label }} />
-                    </label>
-                 );
+              case "checkbox":
+                return (
+                  <label className="flex items-start">
+                    <input
+                      type="checkbox"
+                      {...field}
+                      id={fieldConfig.name}
+                      checked={!!field.value}
+                      className="h-4 w-4 text-nrr-blue focus:ring-nrr-blue border-gray-300 rounded mt-1"
+                    />
+                    <span className="ml-2 text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: fieldConfig.label }} />
+                  </label>
+                );
               default:
                 return (
                   <input
@@ -348,7 +347,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="space-y-6">
-              <h3 className="text-xl font-semibold border-b pb-2">
+              {/* KORREKTUR: "border-b" entfernt, um den Strich auszublenden */}
+              <h3 className="text-xl font-semibold pb-2">
                 Bewerbungsformular
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
