@@ -1,13 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 import CustomButton from "@/components/ui/CustomButton";
-import { AlertCircle, Check, Upload, X } from "lucide-react";
+import { AlertCircle, Check } from "lucide-react";
 import Container from "@/components/ui/Container";
 
-// --- Typen-Definitionen für die Konfiguration ---
+/**
+ * -----------------------------
+ * Typen & Konfiguration
+ * -----------------------------
+ */
 
 type FieldOption = { value: string; label: string };
 
@@ -23,7 +28,6 @@ type FormFieldConfig = {
   | "select"
   | "radio"
   | "checkbox-group"
-  | "file"
   | "checkbox";
   options?: FieldOption[];
   placeholder?: string;
@@ -44,16 +48,9 @@ interface ApplicationFormProps {
   emailJsPublicKey: string;
 }
 
-// --- Hilfsfunktionen ---
-
-const fileToBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-  });
-
+/**
+ * Hilfsfunktion: Zod-Schema dynamisch aus der Konfiguration bauen
+ */
 const generateZodSchema = (config: FormConfig) => {
   const shape: Record<string, z.ZodTypeAny> = {};
   config.forEach((field) => {
@@ -62,7 +59,11 @@ const generateZodSchema = (config: FormConfig) => {
   return z.object(shape);
 };
 
-// --- Die Formular-Komponente ---
+/**
+ * -----------------------------
+ * Formular-Komponente
+ * -----------------------------
+ */
 
 const ApplicationForm: React.FC<ApplicationFormProps> = ({
   formConfig,
@@ -76,8 +77,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Honeypot (unsichtbares Feld – wenn befüllt, dann Spam)
+  const [hpValue, setHpValue] = useState("");
 
   const zodSchema = generateZodSchema(formConfig);
   type FormData = z.infer<typeof zodSchema>;
@@ -85,63 +87,55 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(zodSchema),
     defaultValues: formConfig.reduce((acc, field) => {
-      // @ts-ignore
-      acc[field.name] = field.type === "checkbox-group" ? [] : undefined;
+      (acc as any)[field.name] = field.type === "checkbox-group" ? [] : undefined;
       return acc;
-    }, {}),
+    }, {} as Record<string, any>),
   });
 
   const onSubmit = async (data: FormData) => {
+    // 0) Honeypot-Prüfung
+    if (hpValue.trim() !== "") {
+      toast.error("Versand abgebrochen (Spamverdacht).");
+      return;
+    }
+
     setLoading(true);
     try {
-      let base64File = "";
-      let uploadedFileName = "Keine Datei angehängt";
+      // 1) Formulardaten formatieren (Strings erzwingen)
+      const formattedData = Object.entries(data).reduce((acc, [key, value]) => {
+        let out: string;
+        if (Array.isArray(value)) out = value.join(", ");
+        else if (value === undefined || value === null) out = "";
+        else out = String(value);
 
-      if (data.lebenslauf instanceof File) {
-        base64File = await fileToBase64(data.lebenslauf);
-        uploadedFileName = data.lebenslauf.name;
-      }
+        // Leere optionale Felder sauber befüllen
+        if (out.trim() === "") out = "Nicht angegeben";
+        acc[key] = out;
+        return acc;
+      }, {} as Record<string, string>);
 
-      const formattedData = Object.entries(data).reduce(
-        (acc, [key, value]) => {
-          if (Array.isArray(value)) {
-            // @ts-ignore
-            acc[key] = value.join(", ");
-          } else if (value instanceof File) {
-            // file object should not be sent directly
-          } else {
-            // @ts-ignore
-            acc[key] = value;
-          }
-          return acc;
-        },
-        {}
-      );
-
+      // 2) EmailJS-Parameter – nur Strings (keine Attachments)
       const templateParams = {
         ...formattedData,
-        form_title: formTitle,
-        lebenslauf_name: uploadedFileName,
-        lebenslauf_data: base64File,
       };
 
+      // 3) Senden
       await emailjs.send(
         emailJsServiceId,
         emailJsTemplateId,
         templateParams,
         emailJsPublicKey
       );
+
       setSubmitted(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Fehler beim Senden der Bewerbung:", error);
-      alert(
-        "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
-      );
+      const serverMsg = error?.text || error?.message || "Unbekannter Fehler beim Versand.";
+      toast.error(`Senden fehlgeschlagen: ${serverMsg}`);
     } finally {
       setLoading(false);
     }
@@ -156,12 +150,15 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
 
     return (
       <div key={fieldConfig.name} className={fieldConfig.className}>
-        <label
-          htmlFor={fieldConfig.name}
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {fieldConfig.label}
-        </label>
+        {fieldConfig.type !== "checkbox" && (
+          <label
+            htmlFor={fieldConfig.name}
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {fieldConfig.label}
+          </label>
+        )}
+
         <Controller
           name={fieldConfig.name}
           control={control}
@@ -181,10 +178,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                   <select
                     {...field}
                     id={fieldConfig.name}
-                    className={`${baseClasses} bg-white ${error ? errorClasses : normalClasses
-                      }`}
+                    className={`${baseClasses} bg-white ${error ? errorClasses : normalClasses}`}
                   >
-                    <option value="">Bitte wählen...</option>
+                    <option value="">Bitte wählen.</option>
                     {fieldConfig.options?.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
@@ -202,6 +198,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                           {...field}
                           value={opt.value}
                           checked={field.value === opt.value}
+                          onChange={() => field.onChange(opt.value)}
                           className="h-4 w-4 text-nrr-blue focus:ring-nrr-blue border-gray-300"
                         />
                         <span className="ml-2">{opt.label}</span>
@@ -216,13 +213,14 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                       <label key={opt.value} className="flex items-center">
                         <input
                           type="checkbox"
-                          value={opt.value}
+                          checked={Array.isArray(field.value) ? field.value.includes(opt.value) : false}
                           onChange={(e) => {
-                            const currentValues = field.value || [];
-                            const newValue = e.target.checked
-                              ? [...currentValues, opt.value]
-                              : currentValues.filter((v: string) => v !== opt.value);
-                            field.onChange(newValue);
+                            const currentValues: string[] = Array.isArray(field.value) ? field.value : [];
+                            if (e.target.checked) {
+                              field.onChange([...currentValues, opt.value]);
+                            } else {
+                              field.onChange(currentValues.filter((v) => v !== opt.value));
+                            }
                           }}
                           className="h-4 w-4 text-nrr-blue focus:ring-nrr-blue border-gray-300 rounded"
                         />
@@ -231,60 +229,20 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
                     ))}
                   </div>
                 );
-              case "file":
-                return (
-                  <div className="flex items-center gap-4">
-                    <CustomButton
-                      type="button"
-                      variant="outline"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <Upload className="h-4 w-4 mr-2" />
-                      Datei auswählen
-                    </CustomButton>
-                    <input
-                      type="file"
-                      id={fieldConfig.name}
-                      ref={fileInputRef}
-                      className="hidden"
-                      accept=".pdf"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setValue(fieldConfig.name, file);
-                          setFileName(file.name);
-                        }
-                      }}
-                    />
-                    {fileName && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <span>{fileName}</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setValue(fieldConfig.name, null);
-                            setFileName(null);
-                            if (fileInputRef.current) fileInputRef.current.value = "";
-                          }}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
               case "checkbox":
                 return (
                   <label className="flex items-start">
                     <input
                       type="checkbox"
-                      {...field}
                       id={fieldConfig.name}
                       checked={!!field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
                       className="h-4 w-4 text-nrr-blue focus:ring-nrr-blue border-gray-300 rounded mt-1"
                     />
-                    <span className="ml-2 text-sm text-gray-600" dangerouslySetInnerHTML={{ __html: fieldConfig.label }} />
+                    <span
+                      className="ml-2 text-sm text-gray-600"
+                      dangerouslySetInnerHTML={{ __html: fieldConfig.label }}
+                    />
                   </label>
                 );
               default:
@@ -299,6 +257,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
             }
           }}
         />
+
         {error && (
           <p className="mt-1 text-sm text-red-600 flex items-center">
             <AlertCircle className="h-3 w-3 mr-1" />
@@ -319,9 +278,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="p-6 rounded-lg bg-blue-50 border border-blue-200">
-            <h3 className="font-semibold text-nrr-blue mb-2">
-              {infoBox1.title}
-            </h3>
+            <h3 className="font-semibold text-nrr-blue mb-2">{infoBox1.title}</h3>
             <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
               {infoBox1.items.map((item, i) => (
                 <li key={i}>{item}</li>
@@ -329,9 +286,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
             </ul>
           </div>
           <div className="p-6 rounded-lg bg-gray-50 border border-gray-200">
-            <h3 className="font-semibold text-gray-800 mb-2">
-              {infoBox2.title}
-            </h3>
+            <h3 className="font-semibold text-gray-800 mb-2">{infoBox2.title}</h3>
             <p className="text-sm text-gray-700">{infoBox2.text}</p>
           </div>
         </div>
@@ -346,11 +301,32 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {/* Honeypot-Feld: für Nutzer unsichtbar/offscreen */}
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: "-10000px",
+                top: "auto",
+                width: "1px",
+                height: "1px",
+                overflow: "hidden",
+              }}
+            >
+              <label htmlFor="website">Bitte dieses Feld leer lassen</label>
+              <input
+                id="website"
+                name="website"
+                type="text"
+                autoComplete="off"
+                tabIndex={-1}
+                value={hpValue}
+                onChange={(e) => setHpValue(e.target.value)}
+              />
+            </div>
+
             <div className="space-y-6">
-              {/* KORREKTUR: "border-b" entfernt, um den Strich auszublenden */}
-              <h3 className="text-xl font-semibold pb-2">
-                Bewerbungsformular
-              </h3>
+              <h3 className="text-xl font-semibold pb-2">Bewerbungsformular</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {formConfig.map(renderField)}
               </div>

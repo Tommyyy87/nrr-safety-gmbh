@@ -1,11 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import ApplicationForm, {
-    type FormConfig,
-} from "@/components/ApplicationForm";
+import ApplicationForm, { type FormConfig } from "@/components/ApplicationForm";
 import { z } from "zod";
 
 // --- iFrame Resizer Hook ---
-// Dieser kleine Helfer misst die Höhe der Seite und sendet sie an die umgebende Seite.
 const useIframeResizer = () => {
     const ref = useRef<HTMLDivElement>(null);
 
@@ -13,23 +10,18 @@ const useIframeResizer = () => {
         const observer = new ResizeObserver(([entry]) => {
             if (entry) {
                 const height = entry.contentRect.height;
-                // Sende die Höhe an das Parent-Window (die Contao-Seite)
-                window.parent.postMessage({ type: "resize-iframe", height: height }, "*");
+                window.parent.postMessage({ type: "resize-iframe", height }, "*");
             }
         });
 
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
-
+        if (ref.current) observer.observe(ref.current);
         return () => observer.disconnect();
     }, []);
 
     return ref;
 };
 
-
-// "Bauplan" für das Bewerbungsformular "Lehrkraft Erste Hilfe"
+// Formular-Konfiguration "Lehrkraft Erste Hilfe"
 const ersteHilfeFormConfig: FormConfig = [
     {
         name: "anrede",
@@ -55,25 +47,35 @@ const ersteHilfeFormConfig: FormConfig = [
         type: "text",
         validation: z.string().min(2, "Nachname ist erforderlich."),
     },
+
+    // Adresse (getrennte Felder)
     {
         name: "strasse",
-        label: "Straße und Hausnummer",
+        label: "Straße",
         type: "text",
-        validation: z.string().min(3, "Angabe ist erforderlich."),
+        validation: z.string().min(3, "Straße ist erforderlich."),
     },
     {
-        name: "plzOrt",
-        label: "PLZ und Ort",
+        name: "hausnummer",
+        label: "Hausnummer",
         type: "text",
-        validation: z.string().min(5, "PLZ und Ort sind erforderlich."),
+        validation: z.string().min(1, "Hausnummer ist erforderlich."),
     },
     {
-        name: "land",
-        label: "Land",
-        type: "select",
-        validation: z.string().min(1, "Länderauswahl ist erforderlich."),
-        options: [{ value: "Deutschland", label: "Deutschland" }],
+        name: "plz",
+        label: "PLZ",
+        type: "text",
+        validation: z
+            .string()
+            .regex(/^\d{5}$/, "Bitte eine 5-stellige PLZ angeben."),
     },
+    {
+        name: "ort",
+        label: "Ort",
+        type: "text",
+        validation: z.string().min(2, "Ort ist erforderlich."),
+    },
+
     {
         name: "email",
         label: "E-Mail",
@@ -92,48 +94,42 @@ const ersteHilfeFormConfig: FormConfig = [
         type: "date",
         validation: z.string().min(1, "Geburtsdatum ist erforderlich."),
     },
+
     {
         name: "qualifikation",
         label: "Besitzen Sie die Qualifikation zum/zur Lehrkraft Erste-Hilfe?",
         type: "radio",
+        validation: z.string().min(1, "Bitte wählen Sie eine Option."),
         options: [
             { value: "ja", label: "Ja" },
             { value: "nein", label: "Nein" },
         ],
-        validation: z.enum(["ja", "nein"], {
-            errorMap: () => ({ message: "Bitte eine Option auswählen." }),
-        }),
         className: "md:col-span-2",
     },
+
+    // Berufserfahrung jetzt OPTIONAL
     {
         name: "erfahrung",
-        label: "Haben Sie bereits Erfahrung als Lehrkraft sammeln können?",
-        type: "radio",
-        options: [
-            { value: "ja", label: "Ja" },
-            { value: "nein", label: "Nein" },
-        ],
-        validation: z.enum(["ja", "nein"], {
-            errorMap: () => ({ message: "Bitte eine Option auswählen." }),
-        }),
+        label: "Berufserfahrung (Kurzbeschreibung)",
+        type: "textarea",
+        validation: z.string().optional(),
         className: "md:col-span-2",
     },
+
     {
         name: "fuehrerschein",
         label: "Führerschein vorhanden?",
         type: "radio",
+        validation: z.string().min(1, "Bitte wählen Sie eine Option."),
         options: [
             { value: "ja", label: "Ja" },
             { value: "nein", label: "Nein" },
         ],
-        validation: z.enum(["ja", "nein"], {
-            errorMap: () => ({ message: "Bitte eine Option auswählen." }),
-        }),
         className: "md:col-span-2",
     },
     {
         name: "verfuegbarkeit",
-        label: "An welchen Tagen sind Sie zeitlich flexibel?",
+        label: "Verfügbarkeit (mehrfach möglich)",
         type: "checkbox-group",
         options: [
             { value: "Mo-Vormittag", label: "Mo Vormittag" },
@@ -149,9 +145,7 @@ const ersteHilfeFormConfig: FormConfig = [
             { value: "Fr-Nachmittag", label: "Fr Nachmittag" },
             { value: "Sa-Nachmittag", label: "Sa Nachmittag" },
         ],
-        validation: z
-            .array(z.string())
-            .min(1, "Bitte geben Sie Ihre Verfügbarkeit an."),
+        validation: z.array(z.string()).min(1, "Bitte geben Sie Ihre Verfügbarkeit an."),
         className: "md:col-span-2",
     },
     {
@@ -172,37 +166,21 @@ const ersteHilfeFormConfig: FormConfig = [
         name: "nachricht",
         label: "Ihre Nachricht an uns",
         type: "textarea",
-        validation: z
-            .string()
-            .min(10, "Nachricht muss mind. 10 Zeichen enthalten."),
-        className: "md:col-span-2",
-    },
-    {
-        name: "lebenslauf",
-        label: "Lebenslauf hochladen (PDF, max. 5MB)",
-        type: "file",
-        validation: z
-            .any()
-            .optional()
-            .refine(
-                (file) => !file || file.size <= 5 * 1024 * 1024,
-                `Die Datei darf maximal 5MB groß sein.`
-            )
-            .refine(
-                (file) => !file || file.type === "application/pdf",
-                "Nur PDF-Dateien sind erlaubt."
-            ),
+        validation: z.string().min(10, "Nachricht muss mind. 10 Zeichen enthalten."),
         className: "md:col-span-2",
     },
     {
         name: "datenschutz",
-        label: 'Ich habe die <a href="/datenschutz" target="_blank" class="text-nrr-blue hover:underline">Datenschutzerklärung</a> gelesen und akzeptiere sie.',
+        label:
+            'Ich habe die <a href="/datenschutz" target="_blank" class="text-nrr-blue hover:underline">Datenschutzerklärung</a> gelesen und akzeptiere sie.',
         type: "checkbox",
         validation: z.literal(true, {
-            errorMap: () => ({ message: "Sie müssen der Datenschutzerklärung zustimmen." }),
+            errorMap: () => ({
+                message: "Sie müssen der Datenschutzerklärung zustimmen.",
+            }),
         }),
         className: "md:col-span-2",
-    }
+    },
 ];
 
 const ErsteHilfeKarrierePage = () => {
@@ -219,15 +197,15 @@ const ErsteHilfeKarrierePage = () => {
                     items: [
                         "Die mit * gekennzeichneten Felder sind Pflichtfelder.",
                         "Wir speichern Ihre Bewerbungsdaten streng nach DSGVO.",
-                        "Bitte laden Sie Ihren Lebenslauf als PDF-Dokument hoch (max. 5MB).",
                     ],
                 }}
                 infoBox2={{
                     title: "Bewerbungsprozess",
-                    text: "Nach Eingang Ihrer Bewerbung prüfen wir Ihre Unterlagen und melden uns innerhalb weniger Werktage bei Ihnen für die nächsten Schritte.",
+                    text:
+                        "Nach Eingang Ihrer Bewerbung prüfen wir Ihre Angaben und melden uns innerhalb weniger Werktage bei Ihnen für die nächsten Schritte.",
                 }}
                 emailJsServiceId="service_wsqekqp"
-                emailJsTemplateId="template_eu8mssv" // Hier sollte eine spezifische Template-ID für Bewerbungen hinterlegt werden
+                emailJsTemplateId="template_vjlm3n6"
                 emailJsPublicKey="VYprboTK3z3nQQUTa"
             />
         </div>
