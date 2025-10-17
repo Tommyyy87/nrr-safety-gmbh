@@ -208,7 +208,7 @@ const Header = () => {
                             <div className="relative">
                                 <div className="relative rounded-2xl overflow-hidden shadow-2xl transform-gpu">
                                     <img
-                                        src="/team.webp"
+                                        src="/team3.jpg"
                                         alt="Die Geschäftsführer der NRR safety GmbH"
                                         className="w-full h-[500px] sm:h-[600px] object-cover object-center"
                                     />
